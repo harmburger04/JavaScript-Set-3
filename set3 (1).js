@@ -33,7 +33,22 @@
  * "no relationship" otherwise.
  */
 function relationshipStatus(fromMember, toMember, socialGraph) {
-    // Write your code here
+     if (!socialGraph[fromMember]) {
+        return "no relationship";
+    }
+    
+    const fromFollows = socialGraph[fromMember].following.includes(toMember);
+    const toFollows = socialGraph[toMember]?.following.includes(fromMember);
+
+    if (fromFollows && toFollows) {
+        return "friends";
+    } else if (fromFollows) {
+        return "follower";
+    } else if (toFollows) {
+        return "followed by";
+    } else {
+        return "no relationship";
+    }
 }
 
 /**
@@ -53,7 +68,38 @@ function relationshipStatus(fromMember, toMember, socialGraph) {
  * @returns {string} the symbol of the winner, or "NO WINNER" if there is no winner.
  */
 function ticTacToe(board) {
-    // Write your code here
+     const n = board.length;
+
+    for (let i = 0; i < n; i++) {
+        if (board[i].every(cell => cell === board[i][0] && cell !== "")) {
+            return board[i][0];
+        }
+    }
+
+    for (let i = 0; i < n; i++) {
+        let column = [];
+        for (let j = 0; j < n; j++) {
+            column.push(board[j][i]);
+        }
+        if (column.every(cell => cell === column[0] && cell !== "")) {
+            return column[0];
+        }
+    }
+
+    let diagonal1 = [];
+    let diagonal2 = [];
+    for (let i = 0; i < n; i++) {
+        diagonal1.push(board[i][i]); 
+        diagonal2.push(board[i][n - 1 - i]);
+    }
+    if (diagonal1.every(cell => cell === diagonal1[0] && cell !== "")) {
+        return diagonal1[0];
+    }
+    if (diagonal2.every(cell => cell === diagonal2[0] && cell !== "")) {
+        return diagonal2[0];
+    }
+
+    return "NO WINNER";
 }
 
 /**
@@ -73,5 +119,26 @@ function ticTacToe(board) {
  * @returns {Number} the time that it will take the shuttle to travel from firstStop to secondStop
  */
 function eta(firstStop, secondStop, routeMap) {
-    // Write your code here
+    let stops = Object.keys(routeMap);
+    let time = 0;
+    let foundStart = false;
+    
+    while (true) {
+        for (let i = 0; i < stops.length; i++) {
+            let currentStop = stops[i];
+            let nextStop = stops[(i + 1) % stops.length];
+            
+            if (currentStop === firstStop) {
+                foundStart = true;
+            }
+            
+            if (foundStart) {
+                time += routeMap[currentStop];
+                
+                if (nextStop === secondStop) {
+                    return time;
+                }
+            }
+        }
+    }
 }
